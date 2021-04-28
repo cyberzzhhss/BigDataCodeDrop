@@ -6,6 +6,7 @@ Remember to replace [NetID] with your own.
 # STEP 0
 
 ### Rename the exported data and upload to hdfs
+
 ```shell
 ls
 mv 000000_0 FinalData.csv

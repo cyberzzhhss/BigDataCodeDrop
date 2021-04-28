@@ -3,17 +3,15 @@
 
 # Goal
 
-We will explore 2 tables:
+We will explore 3 tables:
 
 * boston_clean
-
 * yelp_business
+* boston_stats
 
 # Notice
 
 In profiling_code.txt contains all the code; therefore, avoiding the need to copy the command line by line.
-
-
 
 # Part 0
 
@@ -52,8 +50,6 @@ DESCRIBE boston_clean;
 -- | property_id  | int        |          |
 -- +--------------+------------+----------+
 ```
-Table boston_clean created from table boston_raw, filter out null value and select targeted substring
-
 Check total number of entry
 
 ```sql
