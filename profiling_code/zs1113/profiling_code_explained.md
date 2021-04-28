@@ -3,9 +3,10 @@
 
 # Goal
 
-We will explore 3 tables:
+We will explore **4** tables:
 
 * boston_clean
+* boston_health
 * yelp_business
 * boston_stats
 
@@ -25,7 +26,7 @@ beeline --silent
 use [NetID];
 ```
 
-# 3 STEPS IN TOTAL
+# 4 STEPS IN TOTAL
 
 
 
@@ -34,7 +35,7 @@ use [NetID];
 
 
 
-# Profiling boston_clean
+## Profiling boston_clean
 
 ```sql
 DESCRIBE boston_clean;
@@ -51,6 +52,23 @@ DESCRIBE boston_clean;
 -- +--------------+------------+----------+
 ```
 Check total number of entry
+
+Check fields
+```sql
+DESCRIBE boston_health;
+-- +------------+------------+----------+
+-- |  col_name  | data_type  | comment  |
+-- +------------+------------+----------+
+-- | name       | string     |          |
+-- | address    | string     |          |
+-- | city       | string     |          |
+-- | latitude   | string     |          |
+-- | longitude  | string     |          |
+-- | n_pass     | bigint     |          |
+-- | n_fail     | bigint     |          |
+-- | pass_rate  | double     |          |
+-- +------------+------------+----------+
+```
 
 ```sql
 SELECT COUNT(*) FROM boston_clean;
@@ -125,9 +143,372 @@ Notice: [Only HE_Pass is health pass, other forms of pass is not considered a he
 
 
 
+## Profiling boston_health
+
+```sql
+DESCRIBE boston_health;
+-- +------------+------------+----------+
+-- |  col_name  | data_type  | comment  |
+-- +------------+------------+----------+
+-- | name       | string     |          |
+-- | address    | string     |          |
+-- | city       | string     |          |
+-- | latitude   | string     |          |
+-- | longitude  | string     |          |
+-- | n_pass     | bigint     |          |
+-- | n_fail     | bigint     |          |
+-- | pass_rate  | double     |          |
+-- +------------+------------+----------+
+```
 
 
-# Profiling yelp_business
+```sql
+SELECT COUNT(*) FROM boston_health;
+-- +-------+
+-- |  _c0  |
+-- +-------+
+-- | 5518  |
+-- +-------+
+
+```
+
+Find max, min, avg of n_pass
+```sql
+SELECT MAX(n_pass) AS max_n_pass, MIN(n_pass) AS min_n_pass, AVG(n_pass) AS avg_n_pass FROM boston_health;
+
+-- +-------------+-------------+---------------------+
+-- | max_n_pass  | min_n_pass  |     avg_n_pass      |
+-- +-------------+-------------+---------------------+
+-- | 2556        | 0           | 234.34903950706777  |
+-- +-------------+-------------+---------------------+
+
+```
+
+Find the top 3 most occurred n_pass, top 1 occured is the mode
+```sql
+SELECT COUNT(n_pass) AS num, n_pass FROM boston_health GROUP BY n_pass ORDER BY num DESC LIMIT 3;
+
+-- +------+---------+
+-- | num  | n_pass  |
+-- +------+---------+
+-- | 383  | 0       |
+-- | 351  | 9       |
+-- | 228  | 18      |
+-- +------+---------+
+
+```
+
+Find max, min, avg of n_fail
+```sql
+SELECT MAX(n_fail) AS max_n_fail, MIN(n_fail) AS min_n_fail, AVG(n_fail) AS avg_n_fail FROM boston_health;
+
+-- +-------------+-------------+--------------------+
+-- | max_n_fail  | min_n_fail  |     avg_n_fail     |
+-- +-------------+-------------+--------------------+
+-- | 7434        | 0           | 520.6087350489307  |
+-- +-------------+-------------+--------------------+
+
+```
+
+Find the top 3 most occured n_fail, top 1 occured is the mode
+```sql
+SELECT COUNT(n_fail) AS num, n_fail FROM boston_health GROUP BY n_fail ORDER BY num DESC LIMIT 3;
+
+-- +------+---------+
+-- | num  | n_fail  |
+-- +------+---------+
+-- | 318  | 9       |
+-- | 293  | 18      |
+-- | 213  | 0       |
+-- +------+---------+
+
+
+```
+
+Find max, min, avg of pass_rate
+```sql
+SELECT MAX(pass_rate) AS max_pass_rate, MIN(pass_rate) AS min_pass_rate, AVG(pass_rate) AS avg_pass_rate FROM boston_health;
+
+-- +----------------+----------------+--------------------+
+-- | max_pass_rate  | min_pass_rate  |   avg_pass_rate    |
+-- +----------------+----------------+--------------------+
+-- | 1.0            | 0.0            | 0.376200942370424  |
+-- +----------------+----------------+--------------------+
+```
+
+Find the top 3 most occured pass_rate, top 1 occured is the mode
+```sql
+--  SELECT COUNT(pass_rate) AS num, pass_rate FROM boston_health GROUP BY pass_rate ORDER BY num DESC LIMIT 3;
+
+-- +------+------------+
+-- | num  | pass_rate  |
+-- +------+------------+
+-- | 383  | 0.0        |
+-- | 318  | 0.5        |
+-- | 213  | 1.0        |
+-- +------+------------+
+
+```
+
+Find the max number of health pass for each city, in a descending order of max_n_pass
+```sql
+SELECT MAX(n_pass) as max_n_pass, city FROM boston_health GROUP BY city ORDER BY max_n_pass DESC;
+
+-- +-------------+----------------+
+-- | max_n_pass  |      city      |
+-- +-------------+----------------+
+-- | 2556        | Dorchester     |
+-- | 2313        | East Boston    |
+-- | 2313        | Boston         |
+-- | 1881        | Roxbury        |
+-- | 1872        | Roslindale     |
+-- | 1791        | West Roxbury   |
+-- | 1656        | Brighton       |
+-- | 1584        | Chestnut Hill  |
+-- | 1512        | Allston        |
+-- | 1395        | Hyde Park      |
+-- | 1359        | Charlestown    |
+-- | 1287        | Jamaica Plain  |
+-- | 1287        | Mattapan       |
+-- | 1224        | South Boston   |
+-- | 1170        | Mission Hill   |
+-- | 414         | South End      |
+-- | 72          |                |
+-- +-------------+----------------+
+
+```
+
+Find the max number of health fail for each city, in a descending order of max_n_fail
+```sql
+SELECT MAX(n_fail) as max_n_fail, city FROM boston_health GROUP BY city ORDER BY max_n_fail DESC;
+
+-- +-------------+----------------+
+-- | max_n_fail  |      city      |
+-- +-------------+----------------+
+-- | 7434        | West Roxbury   |
+-- | 6345        | Boston         |
+-- | 5598        | Jamaica Plain  |
+-- | 5184        | Roxbury        |
+-- | 4536        | Dorchester     |
+-- | 4167        | Mission Hill   |
+-- | 4149        | Mattapan       |
+-- | 4122        | Allston        |
+-- | 4032        | East Boston    |
+-- | 3978        | Hyde Park      |
+-- | 3339        | Roslindale     |
+-- | 3033        | South Boston   |
+-- | 2601        | Brighton       |
+-- | 2349        | Chestnut Hill  |
+-- | 1926        | Charlestown    |
+-- | 783         | South End      |
+-- | 162         |                |
+-- +-------------+----------------+
+```
+
+Find the max number of health pass_rate for each city, in a descending order of max_pass_rate
+```sql
+SELECT MAX(pass_rate) as max_pass_rate, city FROM boston_health GROUP BY city ORDER BY max_pass_rate DESC;
+-- +----------------+----------------+
+-- | max_pass_rate  |      city      |
+-- +----------------+----------------+
+-- | 1.0            | West Roxbury   |
+-- | 1.0            | South Boston   |
+-- | 1.0            | Roxbury        |
+-- | 1.0            | Roslindale     |
+-- | 1.0            | Jamaica Plain  |
+-- | 1.0            | Hyde Park      |
+-- | 1.0            | East Boston    |
+-- | 1.0            | Dorchester     |
+-- | 1.0            | Charlestown    |
+-- | 1.0            | Brighton       |
+-- | 1.0            | Boston         |
+-- | 1.0            | Allston        |
+-- | 0.875          | Mattapan       |
+-- | 0.75           | Chestnut Hill  |
+-- | 0.5            | Mission Hill   |
+-- | 0.34586        | South End      |
+-- | 0.30769        |                |
+-- +----------------+----------------+
+
+```
+
+
+Find the min number of health pass for each city, in a ascending order of min_n_pass
+```sql
+SELECT MIN(n_pass) as min_n_pass, city FROM boston_health GROUP BY city ORDER BY min_n_pass;
+
+-- +-------------+----------------+
+-- | min_n_pass  |      city      |
+-- +-------------+----------------+
+-- | 0           | West Roxbury   |
+-- | 0           | South Boston   |
+-- | 0           | Roxbury        |
+-- | 0           | Roslindale     |
+-- | 0           | Mission Hill   |
+-- | 0           | Mattapan       |
+-- | 0           | Jamaica Plain  |
+-- | 0           | Hyde Park      |
+-- | 0           | East Boston    |
+-- | 0           | Dorchester     |
+-- | 0           | Charlestown    |
+-- | 0           | Brighton       |
+-- | 0           | Boston         |
+-- | 0           | Allston        |
+-- | 27          | Chestnut Hill  |
+-- | 72          |                |
+-- | 414         | South End      |
+-- +-------------+----------------+
+
+```
+
+Find the min number of health fail for each city, in a ascending order of min_n_fail
+```sql
+SELECT MIN(n_fail) as min_n_fail, city FROM boston_health GROUP BY city ORDER BY min_n_fail;
+
+-- +-------------+----------------+
+-- | min_n_fail  |      city      |
+-- +-------------+----------------+
+-- | 0           | West Roxbury   |
+-- | 0           | South Boston   |
+-- | 0           | Roxbury        |
+-- | 0           | Roslindale     |
+-- | 0           | Jamaica Plain  |
+-- | 0           | Hyde Park      |
+-- | 0           | East Boston    |
+-- | 0           | Dorchester     |
+-- | 0           | Charlestown    |
+-- | 0           | Brighton       |
+-- | 0           | Boston         |
+-- | 0           | Allston        |
+-- | 9           | Mattapan       |
+-- | 9           | Chestnut Hill  |
+-- | 9           | Mission Hill   |
+-- | 162         |                |
+-- | 783         | South End      |
+-- +-------------+----------------+
+
+```
+
+Find the min number of health pass_rate for each city, in a ascending order of min_pass_rate
+```sql
+SELECT MIN(pass_rate) as min_pass_rate, city FROM boston_health GROUP BY city ORDER BY min_pass_rate;
+
+-- +----------------+----------------+
+-- | min_pass_rate  |      city      |
+-- +----------------+----------------+
+-- | 0.0            | West Roxbury   |
+-- | 0.0            | South Boston   |
+-- | 0.0            | Roxbury        |
+-- | 0.0            | Roslindale     |
+-- | 0.0            | Mission Hill   |
+-- | 0.0            | Mattapan       |
+-- | 0.0            | Jamaica Plain  |
+-- | 0.0            | Hyde Park      |
+-- | 0.0            | East Boston    |
+-- | 0.0            | Dorchester     |
+-- | 0.0            | Charlestown    |
+-- | 0.0            | Brighton       |
+-- | 0.0            | Boston         |
+-- | 0.0            | Allston        |
+-- | 0.30769        |                |
+-- | 0.34586        | South End      |
+-- | 0.40275        | Chestnut Hill  |
+-- +----------------+----------------+
+
+```
+
+Find the avg number of health pass for each city, in a descending order of avg_n_pass
+```sql
+SELECT AVG(n_pass) as avg_n_pass, city FROM boston_health GROUP BY city ORDER BY avg_n_pass DESC;
+
+-- +---------------------+----------------+
+-- |     avg_n_pass      |      city      |
+-- +---------------------+----------------+
+-- | 805.5               | Chestnut Hill  |
+-- | 414.0               | South End      |
+-- | 341.77868852459017  | West Roxbury   |
+-- | 281.21311475409834  | Mission Hill   |
+-- | 260.1024930747922   | East Boston    |
+-- | 247.10969387755102  | Roxbury        |
+-- | 238.01243980738363  | Boston         |
+-- | 232.71428571428572  | Charlestown    |
+-- | 228.6833976833977   | Jamaica Plain  |
+-- | 227.628912071535    | Dorchester     |
+-- | 225.27777777777777  | South Boston   |
+-- | 220.21387283236993  | Roslindale     |
+-- | 217.34117647058824  | Allston        |
+-- | 205.125             | Mattapan       |
+-- | 180.97297297297297  | Hyde Park      |
+-- | 167.55172413793105  | Brighton       |
+-- | 72.0                |                |
+-- +---------------------+----------------+
+
+```
+
+Find the avg number of health fail for each city, in a descending order of avg_n_fail
+```sql
+SELECT AVG(n_fail) as avg_n_fail, city FROM boston_health GROUP BY city ORDER BY avg_n_fail DESC;
+
+-- +---------------------+----------------+
+-- |     avg_n_fail      |      city      |
+-- +---------------------+----------------+
+-- | 1179.0              | Chestnut Hill  |
+-- | 791.6311475409836   | West Roxbury   |
+-- | 783.0               | South End      |
+-- | 729.7377049180328   | Mission Hill   |
+-- | 725.1198979591836   | Roxbury        |
+-- | 666.4169884169884   | Jamaica Plain  |
+-- | 580.21875           | Mattapan       |
+-- | 559.3681073025335   | Dorchester     |
+-- | 525.9017341040462   | Roslindale     |
+-- | 516.8333333333334   | South Boston   |
+-- | 491.7062600321027   | Boston         |
+-- | 473.1081081081081   | Hyde Park      |
+-- | 436.1883656509695   | East Boston    |
+-- | 410.15294117647056  | Allston        |
+-- | 388.01020408163265  | Charlestown    |
+-- | 336.41379310344826  | Brighton       |
+-- | 162.0               |                |
+-- +---------------------+----------------+
+
+```
+
+Find the avg number of health pass_rate for each city, in a descending order of avg_pass_rate
+```sql
+SELECT AVG(pass_rate) as avg_pass_rate, city FROM boston_health GROUP BY city ORDER BY avg_pass_rate DESC;
+
+-- +----------------------+----------------+
+-- |    avg_pass_rate     |      city      |
+-- +----------------------+----------------+
+-- | 0.576375             | Chestnut Hill  |
+-- | 0.4549597959183674   | Charlestown    |
+-- | 0.4253808033240998   | East Boston    |
+-- | 0.4078645304975924   | Boston         |
+-- | 0.3873342911877395   | Brighton       |
+-- | 0.3695188524590164   | West Roxbury   |
+-- | 0.35822109803921565  | Allston        |
+-- | 0.3491301234567901   | South Boston   |
+-- | 0.3466709009009009   | Hyde Park      |
+-- | 0.34586              | South End      |
+-- | 0.32957897168405376  | Dorchester     |
+-- | 0.3265547398843931   | Roslindale     |
+-- | 0.3138350965250965   | Jamaica Plain  |
+-- | 0.30903520408163265  | Roxbury        |
+-- | 0.30769              |                |
+-- | 0.3004064583333333   | Mattapan       |
+-- | 0.2960083606557377   | Mission Hill   |
+-- +----------------------+----------------+
+
+```
+
+
+# STEP 3
+
+
+
+
+
+## Profiling yelp_business
 
 ```sql
 SELECT COUNT(*) FROM yelp_business;
@@ -247,13 +628,11 @@ comment: only boston data has health information, the other cities do not have e
 
 
 
-# STEP 3
+# STEP 4
 
 
 
-
-
-# Profiling boston_stats
+## Profiling boston_stats
 
 
 ```sql

@@ -7,27 +7,39 @@ use [NetID];
 DESCRIBE boston_clean;
 
 SELECT COUNT(*) FROM boston_clean;
-
 SELECT COUNT(city) AS count, city FROM boston_clean GROUP BY city ORDER BY count DESC;
-
 SELECT COUNT(*) as count, result FROM boston_clean GROUP BY result ORDER BY count DESC;
+
+
+DESCRIBE boston_health;
+
+SELECT COUNT(*) FROM boston_health;
+SELECT MAX(n_pass) AS max_n_pass, MIN(n_pass) AS min_n_pass, AVG(n_pass) AS avg_n_pass FROM boston_health;
+SELECT COUNT(n_pass) AS num, n_pass FROM boston_health GROUP BY n_pass ORDER BY num DESC LIMIT 3;
+SELECT MAX(n_fail) AS max_n_fail, MIN(n_fail) AS min_n_fail, AVG(n_fail) AS avg_n_fail FROM boston_health;
+SELECT COUNT(n_fail) AS num, n_fail FROM boston_health GROUP BY n_fail ORDER BY num DESC LIMIT 3;
+SELECT MAX(pass_rate) AS max_pass_rate, MIN(pass_rate) AS min_pass_rate, AVG(pass_rate) AS avg_pass_rate FROM boston_health;
+SELECT COUNT(pass_rate) AS num, pass_rate FROM boston_health GROUP BY pass_rate ORDER BY num DESC LIMIT 3;
+SELECT MAX(n_pass) as max_n_pass, city FROM boston_health GROUP BY city ORDER BY max_n_pass DESC;
+SELECT MAX(n_fail) as max_n_fail, city FROM boston_health GROUP BY city ORDER BY max_n_fail DESC;
+SELECT MAX(pass_rate) as max_pass_rate, city FROM boston_health GROUP BY city ORDER BY max_pass_rate DESC;
+SELECT MIN(n_pass) as min_n_pass, city FROM boston_health GROUP BY city ORDER BY min_n_pass;
+SELECT MIN(n_fail) as min_n_fail, city FROM boston_health GROUP BY city ORDER BY min_n_fail;
+SELECT MIN(pass_rate) as min_pass_rate, city FROM boston_health GROUP BY city ORDER BY min_pass_rate;
+SELECT AVG(n_pass) as avg_n_pass, city FROM boston_health GROUP BY city ORDER BY avg_n_pass DESC;
+SELECT AVG(n_fail) as avg_n_fail, city FROM boston_health GROUP BY city ORDER BY avg_n_fail DESC;
+SELECT AVG(pass_rate) as avg_pass_rate, city FROM boston_health GROUP BY city ORDER BY avg_pass_rate DESC;
 
 
 
 DESCRIBE yelp_business;
 
 SELECT COUNT(*) FROM yelp_business;
-
 SELECT MAX(stars) AS max_star, MIN(stars) AS min_star, AVG(stars) AS avg_star FROM yelp_business;
-
 SELECT COUNT(stars) AS num, stars FROM yelp_business GROUP BY stars ORDER BY num DESC LIMIT 3;
-
 SELECT COUNT(is_open), is_open FROM yelp_business GROUP BY is_open;
-
 SELECT MAX(review_count) AS max_review_count, MIN(review_count) AS min_review_count, AVG(review_count) AS avg_review_count FROM yelp_business;
-
 SELECT COUNT(review_count) AS num, review_count FROM yelp_business GROUP BY review_count ORDER BY num DESC LIMIT 3;
-
 SELECT COUNT(city) AS COUNT, city FROM yelp_business GROUP BY city ORDER BY COUNT DESC LIMIT 10;
 
 
@@ -35,16 +47,10 @@ SELECT COUNT(city) AS COUNT, city FROM yelp_business GROUP BY city ORDER BY COUN
 DESCRIBE boston_stats;
 
 SELECT COUNT(*) FROM boston_stats;
-
 SELECT MAX(stars) AS max_star, MIN(stars) AS min_star, AVG(stars) AS avg_star FROM boston_stats;
-
 SELECT COUNT(stars) AS num, stars FROM boston_stats GROUP BY stars ORDER BY num DESC LIMIT 3;
-
 SELECT COUNT(is_open), is_open FROM boston_stats GROUP BY is_open;
-
 SELECT MAX(review_count) AS max_review_count, MIN(review_count) AS min_review_count, AVG(review_count) AS avg_review_count FROM boston_stats;
-
 SELECT COUNT(review_count) AS num, review_count FROM boston_stats GROUP BY review_count ORDER BY num DESC LIMIT 3;
-
 SELECT COUNT(city) AS COUNT, city FROM boston_stats GROUP BY city ORDER BY COUNT DESC LIMIT 10;
 
