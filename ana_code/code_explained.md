@@ -1,6 +1,7 @@
 ## Preparation
 
-The regression.scala has all the scala code, making it easier to run the code instead of copying paste the code one line at a time
+The **ana_code.txt** has all the scala code, making it easier to run the code without copying paste the code one line at a time.
+Remember to replace [NetID] with your own.
 
 ### Rename the exported data and upload to hdfs
 ```shell
@@ -27,7 +28,7 @@ import org.apache.spark.ml.classification.LogisticRegression
 
 ```scala
 spark-shell --deploy-mode client
-var df = spark.sql("SELECT * FROM csv.`/user/sx663/sparkInput/FinalData.csv`")
+var df = spark.sql("SELECT * FROM csv.`/user/[NetID]/sparkInput/FinalData.csv`")
 // df: org.apache.spark.sql.DataFrame = [_c0: string, _c1: string ... 10 more fields]
 ```
 ### Note:

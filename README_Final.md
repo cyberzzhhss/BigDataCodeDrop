@@ -1,5 +1,14 @@
 # Source for Datasets:
-1. The yelp dataset (rename "yelp_business.json"):
+
+1. The Food Violation record dataset (**rename** the file as **"boston_raw.csv"** before uploading to hdfs):
+   
+   The file updated on a daily basis. Our file version is on April 21.
+   Your attempt to replicate the result might be different if you choose a dataset from a different date.
+   The raw file from April 21 is stored as boston_raw.csv inside the peel server.
+
+   https://data.boston.gov/dataset/food-establishment-inspections/resource/4582bec6-2b4f-4f9e-bc55-cbaa73117f4c
+
+2. The yelp dataset (rename "yelp_business.json"):
    https://www.yelp.com/dataset/download
 
    * Download from the JSON section
@@ -10,13 +19,6 @@
    * yelp_academic_dataset_business.json should be 124.4 MB large
    * **rename** **"yelp_academic_dataset_business.json"** as **"yelp_business.json"**
    
-2. The Food Violation record dataset (**rename** the file as **"boston_raw.csv"** before uploading to hdfs):
-   
-   The file updated on a daily basis. Our file version is on April 21.
-   Your attempt to replicate the result might be different if you choose a dataset from a different date.
-   The raw file from April 21 is stored as boston_raw.csv inside the peel server.
-
-   https://data.boston.gov/dataset/food-establishment-inspections/resource/4582bec6-2b4f-4f9e-bc55-cbaa73117f4c
 
 # Dataset 1
 
