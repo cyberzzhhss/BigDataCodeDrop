@@ -1,3 +1,5 @@
+
+
 beeline --silent
 !connect jdbc:hive2://hm-1.hpc.nyu.edu:10000/
 [NetID]
