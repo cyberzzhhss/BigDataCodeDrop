@@ -19,12 +19,18 @@
      * should be 124.4 MB large
    * **rename** **"yelp_academic_dataset_business.json"** as **"yelp_business.json"**
 
-
 Instead of copying and pasting the code one line at a time.
 The raw code is inside data_digest.txt
 Remember to replace [NetID] with your own.
 
-# Dataset 1
+# Notice
+
+After performing the following instructions, you should obtain 2 new tables:
+
+* boston_raw
+* json_tab
+
+# Dataset 1 (boston dataset)
 
 Commands 
 ```shell
@@ -53,7 +59,7 @@ CREATE EXTERNAL TABLE boston_raw (businessname STRING,dbaname STRING,legalowner 
 
 LOAD DATA INPATH '/user/[NetID]/hiveInput/boston_raw.csv' INTO TABLE boston_raw;
 ```
-# Dataset 2
+# Dataset 2 (yelp dataset)
 
 
 Commands
@@ -82,3 +88,49 @@ CREATE TABLE json_tab(col1 string);
 LOAD DATA INPATH '/user/[NetID]/hiveInput/yelp_business.json' INTO TABLE json_tab;
 ```
 
+## Table Structure
+
+
+```sql
+DESCRIBE boston_raw;
+-- +---------------+------------+----------+
+-- |   col_name    | data_type  | comment  |
+-- +---------------+------------+----------+
+-- | businessname  | string     |          |
+-- | dbaname       | string     |          |
+-- | legalowner    | string     |          |
+-- | namelast      | string     |          |
+-- | namefirst     | string     |          |
+-- | licenseno     | int        |          |
+-- | issdttm       | string     |          |
+-- | expdttm       | string     |          |
+-- | licstatus     | string     |          |
+-- | licensecat    | string     |          |
+-- | descript      | string     |          |
+-- | result        | string     |          |
+-- | resultdttm    | string     |          |
+-- | violation     | string     |          |
+-- | viollevel     | string     |          |
+-- | violdesc      | string     |          |
+-- | violdttm      | string     |          |
+-- | violstatus    | string     |          |
+-- | statusdate    | string     |          |
+-- | comments      | string     |          |
+-- | address       | string     |          |
+-- | city          | string     |          |
+-- | state         | string     |          |
+-- | zip           | string     |          |
+-- | property_id   | int        |          |
+-- | latitude      | string     |          |
+-- | longitude     | string     |          |
+-- +---------------+------------+----------+
+```
+
+```sql
+ DESCRIBE json_tab;
+-- +-----------+------------+----------+
+-- | col_name  | data_type  | comment  |
+-- +-----------+------------+----------+
+-- | col1      | string     |          |
+-- +-----------+------------+----------+
+```
