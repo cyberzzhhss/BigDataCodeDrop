@@ -45,3 +45,4 @@ INSERT OVERWRITE DIRECTORY '/user/[NetID]/hiveOutput' ROW FORMAT DELIMITED FIELD
 hdfs dfs -ls
 hdfs dfs -ls hiveOutput
 hdfs dfs -get hiveOutput/000000_0
+
