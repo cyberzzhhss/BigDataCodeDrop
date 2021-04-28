@@ -60,7 +60,7 @@ BigDataCodeDrop
 # Instructions to run code
 
 
-# Long Version (Preferablly using markdown editor Typora for colorful experience)
+# Long Version (Preferably using markdown editor Typora for colorful experience)
 
 ## Data Ingest
 Open  BigDataCodeDrop/data_ingest/data_ingest_explained.md
