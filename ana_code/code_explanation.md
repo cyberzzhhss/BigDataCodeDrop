@@ -14,6 +14,11 @@ hdfs dfs -mkdir sparkInput
 hdfs dfs -put FinalData.csv sparkInput
 hdfs dfs -ls sparkInput
 ```
+
+### Switch Environment
+```
+spark-shell --deploy-mode client
+```
 ### Import package
 ```scala
 import org.apache.spark.ml.feature.VectorAssembler
@@ -29,7 +34,6 @@ import org.apache.spark.ml.classification.LogisticRegression
 ### Import data table onto spark as dataframe
 
 ```scala
-spark-shell --deploy-mode client
 var df = spark.sql("SELECT * FROM csv.`/user/[NetID]/sparkInput/FinalData.csv`")
 // df: org.apache.spark.sql.DataFrame = [_c0: string, _c1: string ... 10 more fields]
 ```

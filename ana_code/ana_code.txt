@@ -1,9 +1,21 @@
-var df = spark.sql("SELECT * FROM csv.`/user/[NetID]/sparkInput/FinalData.csv`")
+ls
+hdfs dfs -rm -r -f sparkInput 
+hdfs dfs -ls 
+hdfs dfs -mkdir sparkInput
+hdfs dfs -put FinalData.csv sparkInput
+hdfs dfs -ls sparkInput
 
+
+
+spark-shell --deploy-mode client
+
+
+
+
+var df = spark.sql("SELECT * FROM csv.`/user/zs1113/sparkInput/FinalData.csv`")
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.ml.classification.LogisticRegression
-
 var partone = df.selectExpr("cast(_c9 as double) _c9","cast(_c4 as double) _c4")
 partone.printSchema()
 import org.apache.spark.ml.feature.VectorAssembler
@@ -17,6 +29,7 @@ println(s"Coefficients: ${lrModelone.coefficients} Intercept: ${lrModelone.inter
 var summaryone = lrModelone.summary
 println(s"r2: ${summaryone.r2}")
 
+
 var parttwo = df.selectExpr("cast(_c9 as double) _c9","cast(_c5 as integer) _c5")
 var assemblertwo= new VectorAssembler().setInputCols(Array("_c5")).setOutputCol("features")
 parttwo =assemblertwo.setHandleInvalid("skip").transform(parttwo)
@@ -26,6 +39,7 @@ var lrModeltwo = lrtwo.fit(parttwo)
 println(s"Coefficients: ${lrModeltwo.coefficients} Intercept: ${lrModeltwo.intercept}")
 var summarytwo = lrModeltwo.summary
 println(s"r2: ${summarytwo.r2}")
+
 
 var part3= df.selectExpr("cast(_c6 as double) _c6","cast(_c9 as integer) _c9")
 part3.printSchema()
