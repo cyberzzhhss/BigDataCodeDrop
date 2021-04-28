@@ -21,14 +21,26 @@
 
 Instead of copying and pasting the code one line at a time.
 The raw code is inside data_digest.txt
-Remember to replace [NetID] with your own.
 
 # Notice
 
-After performing the following instructions, you should obtain 2 new tables:
+* **Remember to replace [NetID] with your own**
 
-* boston_raw
-* json_tab
+* After performing the following instructions, you should obtain 2 new tables:
+  * boston_raw
+  * json_tab
+
+
+
+
+
+# 2 STEPS IN TOTAL
+
+
+
+# STEP 1
+
+
 
 # Dataset 1 (boston dataset)
 
@@ -59,8 +71,13 @@ CREATE EXTERNAL TABLE boston_raw (businessname STRING,dbaname STRING,legalowner 
 
 LOAD DATA INPATH '/user/[NetID]/hiveInput/boston_raw.csv' INTO TABLE boston_raw;
 ```
-# Dataset 2 (yelp dataset)
 
+
+# STEP 2
+
+
+
+# Dataset 2 (yelp dataset)
 
 Commands
 ```
@@ -87,6 +104,10 @@ DROP TABLE IF EXISTS json_tab;
 CREATE TABLE json_tab(col1 string);
 LOAD DATA INPATH '/user/[NetID]/hiveInput/yelp_business.json' INTO TABLE json_tab;
 ```
+
+# END (all steps are done)
+
+# Appendix
 
 ## Table Structure
 

@@ -20,13 +20,17 @@
    
 
 # File Directory
-
 ```
-BigDataCodeDrop                       
+bbcd                                  
 ├─ ana_code                           
+│  ├─ clean_data                      
+│  │  └─ FinalData.csv                
 │  ├─ ana_code.txt                    
 │  └─ code_explanation.md             
 ├─ data_ingest                        
+│  ├─ raw_data                        
+│  │  ├─ boston_raw.csv               
+│  │  └─ yelp_business.json           
 │  ├─ data_ingest.txt                 
 │  └─ data_ingest_explained.md        
 ├─ etl_code                           
@@ -45,19 +49,57 @@ BigDataCodeDrop
 │  └─ zs1113                          
 │     ├─ profiling_code.txt           
 │     └─ profiling_code_explained.md  
-├─ raw_data                           
-│  ├─ boston_raw.csv                  
-│  └─ yelp_business.json
-├─ clean_data                         
-│  └─ FinalData.csv                 
-├─ screenshots                        
-│  ├─ Regression1.png                 
-│  └─ Regression2.png                                         
-└─ README.md    
+├─ screenshots   
+│  ├─ Regression1.png                       
+│  ├─ Regression2.png                 
+│  └─ Regression3.png                 
+├─ README.md                          
+└─ README_draft.md                    
 ```
+
 # Instructions to run code
 
-# Long Version
+
+# Long Version (Preferablly using markdown editor Typora for colorful experience)
+
+## Data Ingest
+Open  BigDataCodeDrop/data_ingest/data_ingest_explained.md
+Follow the instruction
+
+## ETL Code
+Open  BigDataCodeDrop/etl_code/zs1113/etl_code_explained.md
+Follow the instruction
+
+## Profiling Code
+Open BigDataCodeDrop/profiling_code/zs1113/profiling_code_explained.md  
+Follow the instruction
+
+## Data Analytics
+Open BigDataCodeDrop/ana_conde/code_explanation.md
+Follow the instruction
 
 
 # Short Version
+
+The txt files only has raw code, no explanation, making it easier to copy and paste.
+**Remember to replace [NetID] with your own.**
+
+## Data Ingest
+Open BigDataCodeDrop/data_ingest/data_ingest.txt
+
+## ETL Code
+Open  BigDataCodeDrop/etl_code/zs1113/etl_code.txt
+
+## Profiling Code
+Open BigDataCodeDrop/profiling_code/zs1113/profiling_code.txt
+
+## Data Analytics
+Open BigDataCodeDrop/ana_conde/ana_code.txt
+
+# Proof of server access
+Peel Server Access
+```
+
+
+
+```

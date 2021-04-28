@@ -14,6 +14,16 @@ We will explore 2 tables:
 In profiling_code.txt contains all the code; therefore, avoiding the need to copy the command line by line.
 
 
+
+# 3 STEPS IN TOTAL
+
+
+
+# STEP 1
+
+
+
+
 # Profiling boston_clean
 
 ```sql
@@ -101,7 +111,16 @@ SELECT COUNT(*) as count, result FROM boston_clean GROUP BY result ORDER BY coun
 
 Notice: [Only HE_Pass is health pass, other forms of pass is not considered a health pass]
 
+
+
+# STEP 2
+
+
+
+
+
 # Profiling yelp_business
+
 ```sql
 SELECT COUNT(*) FROM yelp_business;
 -- +---------+
@@ -215,6 +234,14 @@ SELECT COUNT(city) AS COUNT, city FROM yelp_business GROUP BY city ORDER BY COUN
 -- +--------+------------+
 ```
 comment: only boston data has health information, the other cities do not have easily accessible health data. 
+
+
+
+
+
+# STEP 3
+
+
 
 
 
@@ -340,3 +367,7 @@ SELECT COUNT(city) AS COUNT, city FROM boston_stats GROUP BY city ORDER BY COUNT
 
 ```
 comment: only boston data has health information, the other cities do not have easily accessible health data. 
+
+
+
+# END (all steps are done)

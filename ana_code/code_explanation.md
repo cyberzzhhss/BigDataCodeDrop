@@ -3,6 +3,8 @@
 The **ana_code.txt** has all the scala code, making it easier to run the code without copying paste the code one line at a time.
 Remember to replace [NetID] with your own.
 
+# STEP 0
+
 ### Rename the exported data and upload to hdfs
 ```shell
 ls
@@ -52,7 +54,18 @@ _c11 is longitude
 var partone = df.selectExpr("cast(_c9 as double) _c9","cast(_c4 as double) _c4")
 ```
 
+
+
+# 3 STEPS IN TOTAL
+
+
+
+# STEP 1
+
+
+
 ## First regression
+
 * dependent variable: cleanliness(_c9 pass_rate); 
 * independent variable: ratings(_c4 stars);
 
@@ -111,7 +124,16 @@ println(s"r2: ${summaryone.r2}")
 // r2: 0.0156945754049429
 ```
 
+
+
+# STEP 2
+
+
+
+
+
 ## Second regression: 
+
 * dependent variable: cleanliness(_c9 pass_rate); 
 * independent variable: online popularity(_c5 review counts);
 
@@ -157,7 +179,16 @@ println(s"r2: ${summarytwo.r2}")
 // r2: 0.00346864406594638
 ```
 
+
+
+# STEP 3
+
+
+
+
+
 ## Third regression: 
+
 * independent variable: cleanliness(_c9 pass_rate); 
 * dependent variable: whether in operation(_c6 is_open);
 
@@ -203,3 +234,6 @@ var lr3model = lr3.fit(part3)
 println(s"Coefficients: ${lr3model.coefficients} Intercept: ${lr3model.intercept}")
 // Coefficients: [0.05366519262928552] Intercept: 0.5653731412215562
 ```
+
+# END (all steps are done)
+
