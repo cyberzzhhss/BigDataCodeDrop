@@ -12,7 +12,6 @@
    https://www.yelp.com/dataset/download
 
    * Download from the JSON section
-   ![yelpDataset](doc/yelpDataset.png)
    * After downloading, unzip **yelp_dataset.tar**
    * Go inside yelp_dataset folder
    * yelp_academic_dataset_business.json should be modified at this date: January 28, 2021 at 2:06 PM
