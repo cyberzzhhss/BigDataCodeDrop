@@ -36,3 +36,12 @@ DROP TABLE IF EXISTS boston_stats;
 
 CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.address, temp.city, temp.stars, temp.review_count, temp.is_open, temp.n_pass, temp.n_fail, temp.pass_rate, temp.latitude, temp.longitude FROM unique_temp LEFT JOIN temp ON unique_temp.business_id=temp.business_id WHERE temp.address NOT LIKE '%,%' AND temp.name NOT LIKE '%,%';
 
+
+
+INSERT OVERWRITE DIRECTORY '/user/[NetID]/hiveOutput' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' SELECT * FROM boston_stats;
+
+
+
+hdfs dfs -ls
+hdfs dfs -ls hiveOutput
+hdfs dfs -get hiveOutput/000000_0

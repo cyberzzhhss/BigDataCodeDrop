@@ -26,7 +26,7 @@ use [NetID];
 ```
 
 
-# 3 STEPS IN TOTAL
+# 4 STEPS IN TOTAL
 
 
 
@@ -109,6 +109,41 @@ CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.add
 ```
 
 
+
+
+
+# STEP 4
+
+
+
+## Export Data
+
+```
+INSERT OVERWRITE DIRECTORY '/user/[NetID]/hiveOutput' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' SELECT * FROM boston_stats;
+```
+See at peel server
+
+### commands
+```
+hdfs dfs -ls
+hdfs dfs -ls hiveOutput
+hdfs dfs -get hiveOutput/000000_0
+```
+
+### example response
+
+```
+[zs1113@hlog-2 ~]$ hdfs dfs -ls
+Found 4 items
+drwx------+  - zs1113 zs1113          0 2021-04-20 00:50 .Trash
+drwxrwx---+  - hive   zs1113          0 2021-04-21 16:28 boston_raw
+drwxrwx---+  - zs1113 zs1113          0 2021-04-21 19:27 hiveInput
+drwxrwx---+  - hive   zs1113          0 2021-04-22 00:50 hiveOutput
+[zs1113@hlog-2 ~]$ hdfs dfs -ls hiveOutput
+Found 1 items
+-rwxrwx---+  3 hive zs1113     201697 2021-04-22 00:50 hiveOutput/000000_0
+[zs1113@hlog-2 ~]$ hdfs dfs -get hiveOutput/000000_0
+```
 
 # END (all steps are done)
 

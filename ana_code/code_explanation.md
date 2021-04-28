@@ -8,6 +8,7 @@ Remember to replace [NetID] with your own.
 ### Rename the exported data and upload to hdfs
 ```shell
 ls
+mv 000000_0 FinalData.csv
 hdfs dfs -rm -r -f sparkInput 
 hdfs dfs -ls 
 hdfs dfs -mkdir sparkInput

@@ -1,4 +1,5 @@
 ls
+mv 000000_0 FinalData.csv
 hdfs dfs -rm -r -f sparkInput 
 hdfs dfs -ls 
 hdfs dfs -mkdir sparkInput
@@ -6,10 +7,7 @@ hdfs dfs -put FinalData.csv sparkInput
 hdfs dfs -ls sparkInput
 
 
-
 spark-shell --deploy-mode client
-
-
 
 
 var df = spark.sql("SELECT * FROM csv.`/user/zs1113/sparkInput/FinalData.csv`")
