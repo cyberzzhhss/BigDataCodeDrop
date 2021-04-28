@@ -7,10 +7,11 @@ From the previous data ingest, you should have 2 tables:
    * boston_raw
    * json_tab
 
-After performing the following instructions, you should obtain 2 new tables:
+After performing the following instructions, you should obtain 3 new tables:
 
 * boston_clean
 * yelp_business
+* boston_stats
 
 
 # Clean dataset 1 (boston dataset)
@@ -20,7 +21,7 @@ Table boston_clean created from table boston_raw, filter out null value and sele
 ```sql
 DROP TABLE IF EXISTS boston_clean;
 
-CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result, SUBSTRING(latitude,3,14) AS latitude, SUBSTRING(longitude,2,14) AS longitude, property_id FROM boston_raw WHERE (LENGTH(latitude) > 9 AND LENGTH(longitude) > 9);
+CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result, SUBSTRING(latitude,3,14) AS latitude, SUBSTRING(longitude,2,13) AS longitude, property_id FROM boston_raw WHERE (LENGTH(latitude) > 9 AND LENGTH(longitude) > 9);
 ```
 
 ## Explanation
@@ -63,7 +64,7 @@ SELECT substring(latitude,3,14), latitude FROM boston_raw limit 3;
 ```
 
 ```sql
-SELECT substring(longitude,1,14), longitude FROM boston_raw limit 3;
+SELECT substring(longitude,2,13), longitude FROM boston_raw limit 3;
 
 -- +-----------------+-------------------+
 -- |       _c0       |     longitude     |
@@ -133,3 +134,101 @@ DESCRIBE boston_clean;
 -- | longitude     | string        |          |
 -- +---------------+---------------+----------+
 ```
+
+
+# Merge boston_clean and yelp_business
+Because Hive does not support subquery, temporary tables are needed.
+
+After trial and error, a **matching** combination of
+   * 2 characters in the name, 
+   * 2 characters in the address, 
+   * 2 digits after the decimal point (5 characters in total) in latitude,
+   * 2 digits after the decimal point (6 characters in total, including minus sign) in longitude
+
+has the **best** performance.
+
+Create first temporary table by matching relevant results
+
+```sql
+DROP TABLE IF EXISTS temp;
+
+CREATE TABLE temp AS SELECT yelp_business.business_id, yelp_business.name, yelp_business.address, yelp_business.city, yelp_business.stars, yelp_business.review_count, yelp_business.is_open, boston_health.n_pass, boston_health.n_fail, boston_health.pass_rate, yelp_business.latitude, yelp_business.longitude FROM yelp_business INNER JOIN boston_health ON UPPER(SUBSTRING(yelp_business.name, 1, 2))=UPPER(SUBSTRING(boston_health.name, 1, 2)) AND UPPER(SUBSTRING(yelp_business.address, 1, 2))=UPPER(SUBSTRING(boston_health.address, 1, 2)) AND SUBSTRING(yelp_business.latitude, 1, 5)=SUBSTRING(boston_health.latitude, 1, 5) AND SUBSTRING(yelp_business.longitude, 1, 6)=SUBSTRING(boston_health.longitude, 1, 6);
+
+```
+
+Remove business_id that appears more than once 
+
+```sql
+DROP TABLE IF EXISTS unique_temp;
+
+CREATE TABLE unique_temp AS SELECT business_id  FROM temp GROUP BY business_id HAVING (COUNT(business_id) < 2);
+
+```
+
+Create the desired table by joining the original yelp_business with unique_temp table
+At the same time, removing the rows with comma sign in either name or address to avoid mistakes for later analytics.
+
+```sql
+DROP TABLE IF EXISTS boston_stats;
+
+CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.address, temp.city, temp.stars, temp.review_count, temp.is_open, temp.n_pass, temp.n_fail, temp.pass_rate, temp.latitude, temp.longitude FROM unique_temp LEFT JOIN temp ON unique_temp.business_id=temp.business_id WHERE temp.address NOT LIKE '%,%' AND temp.name NOT LIKE '%,%';
+```
+
+The ultimate table boston_stats structure
+
+```sql
+DESCRIBE boston_stats;
+
+-- +---------------+---------------+----------+
+-- |   col_name    |   data_type   | comment  |
+-- +---------------+---------------+----------+
+-- | business_id   | string        |          |
+-- | name          | string        |          |
+-- | address       | string        |          |
+-- | city          | string        |          |
+-- | stars         | decimal(2,1)  |          |
+-- | review_count  | int           |          |
+-- | is_open       | int           |          |
+-- | n_pass        | bigint        |          |
+-- | n_fail        | bigint        |          |
+-- | pass_rate     | double        |          |
+-- | latitude      | string        |          |
+-- | longitude     | string        |          |
+-- +---------------+---------------+----------+
+```
+
+## Further explanation 
+
+### Explanation of temp, unique_temp and boston_stats
+
+
+According to yelp, business_id is **unique**; therefore, for boston_stats, the table is created by selecting for business_id that **appears only once**.
+
+These results shows why the number of unique_match and the number distinct business are **different**.
+
+This query finds out the number of distinct business_id and the total number of business_id.
+```sql
+SELECT COUNT(DISTINCT business_id) AS n, COUNT(business_id) AS total,  COUNT(DISTINCT business_id)/COUNT(business_id) distinct_rate FROM temp;
+-- +-------+--------+----------------+
+-- |   n   | total  | distinct_rate  |
+-- +-------+--------+----------------+
+-- | 2761  | 3520   | 0.784375       |
+-- +-------+--------+----------------+
+```
+
+This query finds out the number of business_id that appears only once.
+```sql
+SELECT COUNT(unique_temp.business_id) AS unique, count(temp.business_id) AS total,  count(unique_temp.business_id)/count(temp.business_id) AS unique_match_rate FROM unique_temp FULL OUTER JOIN temp ON unique_temp.business_id = temp.business_id;
+
+-- +---------+--------+---------------------+
+-- | unique  | total  |  unique_match_rate  |
+-- +---------+--------+---------------------+
+-- | 2260    | 3520   | 0.6420454545454546  |
+-- +---------+--------+---------------------+
+```
+
+Comment: 
+
+2260 = unique match, the number of business_id that **appears only once**.
+
+2761 = distinct business_id, the number of **different** business_id.

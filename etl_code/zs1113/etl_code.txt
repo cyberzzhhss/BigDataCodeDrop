@@ -1,26 +1,38 @@
-ls
-hdfs dfs -rm -r -f hiveInput 
-hdfs dfs -ls 
-hdfs dfs -mkdir hiveInput
-hdfs dfs -put boston_raw.csv yelp_business.json hiveInput
-hdfs dfs -ls hiveInput
-
-
 beeline --silent
 !connect jdbc:hive2://hm-1.hpc.nyu.edu:10000/
 [NetID]
 [PassCode]
 use [NetID];
 
-DROP TABLE IF EXISTS boston_raw;
+DROP TABLE IF EXISTS boston_clean;
 
-CREATE EXTERNAL TABLE boston_raw (businessname STRING,dbaname STRING,legalowner STRING,namelast STRING,namefirst STRING,licenseno INT,issdttm STRING,expdttm STRING,licstatus STRING,licensecat STRING,descript STRING,result STRING,resultdttm STRING,violation STRING,viollevel STRING,violdesc STRING,violdttm STRING,violstatus STRING,statusdate STRING,comments STRING,address STRING,city STRING,state STRING,zip STRING,property_id INT, latitude STRING, longitude STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/user/[NetID]/boston_raw'  tblproperties("skip.header.line.count"="1"); 
-
-LOAD DATA INPATH '/user/[NetID]/hiveInput/boston_raw.csv' INTO TABLE boston_raw;
+CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result, SUBSTRING(latitude,3,14) AS latitude, SUBSTRING(longitude,2,13) AS longitude, property_id FROM boston_raw WHERE (LENGTH(latitude) > 9 AND LENGTH(longitude) > 9);
 
 
-DROP TABLE IF EXISTS json_tab;
 
-CREATE TABLE json_tab(col1 string);
+DROP TABLE IF EXISTS yelp_business;
 
-LOAD DATA INPATH '/user/[NetID]/hiveInput/yelp_business.json' INTO TABLE json_tab;
+CREATE TABLE yelp_business(business_id STRING, name STRING, address STRING, city STRING, stars DECIMAL(2,1), review_count INT, is_open INT, latitude STRING, longitude STRING);
+
+INSERT OVERWRITE TABLE yelp_business SELECT GET_JSON_OBJECT(col1, '$.business_id'), GET_JSON_OBJECT(col1, '$.name'), GET_JSON_OBJECT(col1, '$.address'), GET_JSON_OBJECT(col1, '$.city'), GET_JSON_OBJECT(col1, '$.stars'), GET_JSON_OBJECT(col1, '$.review_count'), GET_JSON_OBJECT(col1, '$.is_open'), GET_JSON_OBJECT(col1, '$.latitude'), GET_JSON_OBJECT(col1, '$.longitude') FROM json_tab;
+
+
+
+DROP TABLE IF EXISTS temp;
+
+CREATE TABLE temp AS SELECT yelp_business.business_id, yelp_business.name, yelp_business.address, yelp_business.city, yelp_business.stars, yelp_business.review_count, yelp_business.is_open, boston_health.n_pass, boston_health.n_fail, boston_health.pass_rate, yelp_business.latitude, yelp_business.longitude FROM yelp_business INNER JOIN boston_health ON UPPER(SUBSTRING(yelp_business.name, 1, 2))=UPPER(SUBSTRING(boston_health.name, 1, 2)) AND UPPER(SUBSTRING(yelp_business.address, 1, 2))=UPPER(SUBSTRING(boston_health.address, 1, 2)) AND SUBSTRING(yelp_business.latitude, 1, 5)=SUBSTRING(boston_health.latitude, 1, 5) AND SUBSTRING(yelp_business.longitude, 1, 6)=SUBSTRING(boston_health.longitude, 1, 6);
+
+
+
+
+DROP TABLE IF EXISTS unique_temp;
+
+CREATE TABLE unique_temp AS SELECT business_id  FROM temp GROUP BY business_id HAVING (COUNT(business_id) < 2);
+
+
+
+
+DROP TABLE IF EXISTS boston_stats;
+
+CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.address, temp.city, temp.stars, temp.review_count, temp.is_open, temp.n_pass, temp.n_fail, temp.pass_rate, temp.latitude, temp.longitude FROM unique_temp LEFT JOIN temp ON unique_temp.business_id=temp.business_id WHERE temp.address NOT LIKE '%,%' AND temp.name NOT LIKE '%,%';
+

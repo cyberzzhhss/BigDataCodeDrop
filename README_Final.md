@@ -118,7 +118,7 @@ Table 2 boston_clean created from table 1 boston_raw
 ```
 DROP TABLE IF EXISTS boston_clean;
 
-CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result, SUBSTRING(latitude,3,14) AS latitude, SUBSTRING(longitude,2,14) AS longitude, property_id FROM boston_raw WHERE (LENGTH(latitude) > 9 AND LENGTH(longitude) > 9);
+CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result, SUBSTRING(latitude,3,14) AS latitude, SUBSTRING(longitude,2,13) AS longitude, property_id FROM boston_raw WHERE (LENGTH(latitude) > 9 AND LENGTH(longitude) > 9);
 ```
 
 ```
@@ -304,7 +304,7 @@ SELECT COUNT(*) as count, result FROM boston_clean GROUP BY result ORDER BY coun
 ```
 
 ```
-SELECT name, address, city, latitude, longitude, SUM(CASE result WHEN 'HE_Pass' THEN 1 ELSE 0 END) AS n_pass, SUM(CASE result WHEN 'HE_Pass' THEN 0 ELSE 1 END) AS n_fail, ROUND(SUM(CASE result WHEN 'HE_Pass' THEN 1 ELSE 0 END)/COUNT(result), 5) AS pass_rate FROM boston_clean GROUP BY name, address, city, latitude, longitude ORDER BY n_pass DESC LIMIT 5;
+SELECT name, address, city, latitude, longitude, SUM(CASE result WHEN 'HE_Pass' THEN 1 WHEN 'Pass' THEN 1 ELSE 0 END) AS n_pass, SUM(CASE result WHEN 'HE_Pass' THEN 0 ELSE 1 END) AS n_fail, ROUND(SUM(CASE result WHEN 'HE_Pass' THEN 1 ELSE 0 END)/COUNT(result), 5) AS pass_rate FROM boston_clean GROUP BY name, address, city, latitude, longitude ORDER BY n_pass DESC LIMIT 5;
 
 +------------------+-------------------------+--------------+---------------+-----------------+---------+---------+------------+
 |       name       |         address         |     city     |   latitude    |    longitude    | n_pass  | n_fail  | pass_rate  |
@@ -382,7 +382,7 @@ DROP TABLE IF EXISTS temp;
 
 CREATE TABLE temp AS SELECT yelp_business.business_id, yelp_business.name, yelp_business.address, yelp_business.city, yelp_business.stars, yelp_business.review_count, yelp_business.is_open, boston_health.n_pass, boston_health.n_fail, boston_health.pass_rate, yelp_business.latitude, yelp_business.longitude FROM yelp_business INNER JOIN boston_health ON UPPER(SUBSTRING(yelp_business.name, 1, 2))=UPPER(SUBSTRING(boston_health.name, 1, 2)) AND UPPER(SUBSTRING(yelp_business.address, 1, 2))=UPPER(SUBSTRING(boston_health.address, 1, 2)) AND SUBSTRING(yelp_business.latitude, 1, 5)=SUBSTRING(boston_health.latitude, 1, 5) AND SUBSTRING(yelp_business.longitude, 1, 6)=SUBSTRING(boston_health.longitude, 1, 6);
 
-SELECT COUNT(DISTINCT business_id) AS n, COUNT(business_id) AS total,  COUNT(DISTINCT business_id)/COUNT(business_id) uniqueness_rate FROM temp;
+SELECT COUNT(DISTINCT business_id) AS n, COUNT(business_id) AS total,  COUNT(DISTINCT business_id)/COUNT(business_id) distinct_rate FROM temp;
 
 +-------+--------+------------------+
 |   n   | total  | uniqueness_rate  |
@@ -411,7 +411,7 @@ selecting business with addresss excluding comma sign for later analysis
 ```
 DROP TABLE IF EXISTS boston_stats;
 
-CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.address, temp.city, temp.stars, temp.review_count, temp.is_open, temp.n_pass, temp.n_fail, temp.pass_rate, temp.latitude, temp.longitude FROM unique_temp LEFT JOIN temp ON unique_temp.business_id=temp.business_id WHERE temp.address NOT LIKE '%,%' AND temp.name NOT LIKE '%,%'
+CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.address, temp.city, temp.stars, temp.review_count, temp.is_open, temp.n_pass, temp.n_fail, temp.pass_rate, temp.latitude, temp.longitude FROM unique_temp LEFT JOIN temp ON unique_temp.business_id=temp.business_id WHERE temp.address NOT LIKE '%,%' AND temp.name NOT LIKE '%,%';
 
 SELECT COUNT(DISTINCT business_id) AS n, COUNT(business_id) AS total,  COUNT(DISTINCT business_id)/COUNT(business_id) unique_rate FROM boston_stats;
 +-------+--------+--------------+
