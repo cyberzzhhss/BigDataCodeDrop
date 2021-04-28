@@ -10,6 +10,12 @@ CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result,
 
 
 
+DROP TABLE IF EXISTS boston_health;
+
+CREATE TABLE boston_health AS SELECT name, address, city, latitude, longitude, SUM(CASE result WHEN 'HE_Pass' THEN 1 ELSE 0 END) AS n_pass, SUM(CASE result WHEN 'HE_Pass' THEN 0 ELSE 1 END) AS n_fail, ROUND(SUM(CASE result WHEN 'HE_Pass' THEN 1 ELSE 0 END)/COUNT(result), 5) AS pass_rate FROM boston_clean GROUP BY name, address, city, latitude, longitude;
+
+
+
 DROP TABLE IF EXISTS yelp_business;
 
 CREATE TABLE yelp_business(business_id STRING, name STRING, address STRING, city STRING, stars DECIMAL(2,1), review_count INT, is_open INT, latitude STRING, longitude STRING);

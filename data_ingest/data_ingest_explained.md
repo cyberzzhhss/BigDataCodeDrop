@@ -42,7 +42,7 @@ The raw code is inside data_digest.txt
 
 
 
-# Dataset 1 (boston dataset)
+## Dataset 1 (boston dataset)
 
 Commands 
 ```shell
@@ -64,6 +64,7 @@ use [NetID];
 ```
 
 Create table boston_raw
+
 ```
 DROP TABLE IF EXISTS boston_raw;
 
@@ -73,11 +74,12 @@ LOAD DATA INPATH '/user/[NetID]/hiveInput/boston_raw.csv' INTO TABLE boston_raw;
 ```
 
 
+
 # STEP 2
 
 
 
-# Dataset 2 (yelp dataset)
+## Dataset 2 (yelp dataset)
 
 Commands
 ```
@@ -108,6 +110,24 @@ LOAD DATA INPATH '/user/[NetID]/hiveInput/yelp_business.json' INTO TABLE json_ta
 # END (all steps are done)
 
 # Appendix
+
+## STEP 1
+
+Create table boston_raw
+
+The line below allows HIVE to skip the header line
+```sql
+tblproperties("skip.header.line.count"="1");
+```
+
+```
+DROP TABLE IF EXISTS boston_raw;
+
+CREATE EXTERNAL TABLE boston_raw (businessname STRING,dbaname STRING,legalowner STRING,namelast STRING,namefirst STRING,licenseno INT,issdttm STRING,expdttm STRING,licstatus STRING,licensecat STRING,descript STRING,result STRING,resultdttm STRING,violation STRING,viollevel STRING,violdesc STRING,violdttm STRING,violstatus STRING,statusdate STRING,comments STRING,address STRING,city STRING,state STRING,zip STRING,property_id INT, latitude STRING, longitude STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/user/[NetID]/boston_raw'  tblproperties("skip.header.line.count"="1"); 
+
+LOAD DATA INPATH '/user/[NetID]/hiveInput/boston_raw.csv' INTO TABLE boston_raw;
+```
+
 
 ## Table Structure
 

@@ -24,3 +24,5 @@ DROP TABLE IF EXISTS json_tab;
 CREATE TABLE json_tab(col1 string);
 
 LOAD DATA INPATH '/user/[NetID]/hiveInput/yelp_business.json' INTO TABLE json_tab;
+
+
