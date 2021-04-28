@@ -47,3 +47,4 @@ SELECT MAX(review_count) AS max_review_count, MIN(review_count) AS min_review_co
 SELECT COUNT(review_count) AS num, review_count FROM boston_stats GROUP BY review_count ORDER BY num DESC LIMIT 3;
 
 SELECT COUNT(city) AS COUNT, city FROM boston_stats GROUP BY city ORDER BY COUNT DESC LIMIT 10;
+

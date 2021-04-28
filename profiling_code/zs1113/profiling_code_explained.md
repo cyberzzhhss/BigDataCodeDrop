@@ -15,6 +15,18 @@ In profiling_code.txt contains all the code; therefore, avoiding the need to cop
 
 
 
+# Part 0
+
+Log in to Hive
+
+```
+beeline --silent
+!connect jdbc:hive2://hm-1.hpc.nyu.edu:10000/
+[NetID]
+[PassCode]
+use [NetID];
+```
+
 # 3 STEPS IN TOTAL
 
 
