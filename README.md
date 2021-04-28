@@ -95,11 +95,3 @@ Open BigDataCodeDrop/profiling_code/zs1113/profiling_code.txt
 
 ## Data Analytics
 Open BigDataCodeDrop/ana_conde/ana_code.txt
-
-# Proof of server access
-Peel Server Access
-```
-
-
-
-```
