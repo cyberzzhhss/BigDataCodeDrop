@@ -65,7 +65,7 @@ use [NetID];
 
 Create table boston_raw
 
-```
+```sql
 DROP TABLE IF EXISTS boston_raw;
 
 CREATE EXTERNAL TABLE boston_raw (businessname STRING,dbaname STRING,legalowner STRING,namelast STRING,namefirst STRING,licenseno INT,issdttm STRING,expdttm STRING,licstatus STRING,licensecat STRING,descript STRING,result STRING,resultdttm STRING,violation STRING,viollevel STRING,violdesc STRING,violdttm STRING,violstatus STRING,statusdate STRING,comments STRING,address STRING,city STRING,state STRING,zip STRING,property_id INT, latitude STRING, longitude STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/user/[NetID]/boston_raw'  tblproperties("skip.header.line.count"="1"); 
@@ -82,7 +82,7 @@ LOAD DATA INPATH '/user/[NetID]/hiveInput/boston_raw.csv' INTO TABLE boston_raw;
 ## Dataset 2 (yelp dataset)
 
 Commands
-```
+```shell
 ls
 hdfs dfs -rm -r -f hiveInput 
 hdfs dfs -ls 
@@ -92,7 +92,7 @@ hdfs dfs -ls hiveInput
 ```
 
 Log into hive
-```
+```shell
 beeline --silent
 !connect jdbc:hive2://hm-1.hpc.nyu.edu:10000/
 [NetID]
@@ -101,7 +101,7 @@ use [NetID];
 ```
 
 Create table json_tab
-```
+```sql
 DROP TABLE IF EXISTS json_tab;
 CREATE TABLE json_tab(col1 string);
 LOAD DATA INPATH '/user/[NetID]/hiveInput/yelp_business.json' INTO TABLE json_tab;
@@ -120,7 +120,7 @@ The line below allows HIVE to skip the header line
 tblproperties("skip.header.line.count"="1");
 ```
 
-```
+```sql
 DROP TABLE IF EXISTS boston_raw;
 
 CREATE EXTERNAL TABLE boston_raw (businessname STRING,dbaname STRING,legalowner STRING,namelast STRING,namefirst STRING,licenseno INT,issdttm STRING,expdttm STRING,licstatus STRING,licensecat STRING,descript STRING,result STRING,resultdttm STRING,violation STRING,viollevel STRING,violdesc STRING,violdttm STRING,violstatus STRING,statusdate STRING,comments STRING,address STRING,city STRING,state STRING,zip STRING,property_id INT, latitude STRING, longitude STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/user/[NetID]/boston_raw'  tblproperties("skip.header.line.count"="1"); 
