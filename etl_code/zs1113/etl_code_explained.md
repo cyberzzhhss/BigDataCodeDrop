@@ -35,9 +35,9 @@ use [NetID];
 
 
 
-# Clean and Transform dataset 1 (boston dataset)
+## Clean and Transform dataset 1 (boston dataset)
 
-## Create table Boston_clean
+### Create table Boston_clean
 
 Create a new table **boston_clean** from table **boston_raw**, filter out null value and select desired substring
 
@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS boston_clean;
 CREATE TABLE boston_clean AS SELECT businessname AS name, address, city, result, SUBSTRING(latitude,3,14) AS latitude, SUBSTRING(longitude,2,13) AS longitude, property_id FROM boston_raw WHERE (LENGTH(latitude) > 9 AND LENGTH(longitude) > 9);
 ```
 
-## Create table Boston_health
+### Create table Boston_health
 
 Create a new table **boston_health** from table **boston_clean** (Explanation in appendix)
 
@@ -63,7 +63,7 @@ CREATE TABLE boston_health AS SELECT name, address, city, latitude, longitude, S
 
 
 
-# Clean and Transform dataset 2 (yelp dataset)
+## Clean and Transform dataset 2 (yelp dataset)
 
 Create empty table yelp_business
 ```sql
@@ -83,7 +83,7 @@ INSERT OVERWRITE TABLE yelp_business SELECT GET_JSON_OBJECT(col1, '$.business_id
 
 
 
-# Merge boston_clean and yelp_business
+## Merge boston_clean and yelp_business
 
 Because Hive does not support subquery, temporary tables are needed.
 
@@ -132,16 +132,18 @@ CREATE TABLE boston_stats AS SELECT unique_temp.business_id, temp.name, temp.add
 ```
 INSERT OVERWRITE DIRECTORY '/user/[NetID]/hiveOutput' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' SELECT * FROM boston_stats;
 ```
-At the peel server
 
-### commands
+
+### Exit HIVE and execute the commands at the peel server
+
+### Commands
 ```
 hdfs dfs -ls
 hdfs dfs -ls hiveOutput
 hdfs dfs -get hiveOutput/000000_0
 ```
 
-### example response
+### Example response
 
 ```
 [zs1113@hlog-2 ~]$ hdfs dfs -ls
@@ -177,23 +179,23 @@ Some rows do not have latitude value
 ```sql
 SELECT COUNT(latitude) AS count, LENGTH(latitude) AS str_length FROM boston_raw GROUP BY LENGTH(latitude);
 
-+---------+-------------+
-|  count  | str_length  |
-+---------+-------------+
-| 363990  | 0           |
-| 925746  | 14          |
-+---------+-------------+
+-- +---------+-------------+
+-- |  count  | str_length  |
+-- +---------+-------------+
+-- | 363990  | 0           |
+-- | 925746  | 14          |
+-- +---------+-------------+
 ```
 Some rows not have longitude value
 ```sql
 SELECT COUNT(longitude) AS count, LENGTH(longitude) AS str_length FROM boston_raw GROUP BY LENGTH(longitude);
 
-+---------+-------------+
-|  count  | str_length  |
-+---------+-------------+
-| 0       | NULL        |
-| 925746  | 16          |
-+---------+-------------+
+-- +---------+-------------+
+-- |  count  | str_length  |
+-- +---------+-------------+
+-- | 0       | NULL        |
+-- | 925746  | 16          |
+-- +---------+-------------+
 ```
 
 Clean the latitude and longitude column by selecting the subtring
@@ -232,8 +234,8 @@ Details:
 
 * calculating the metric **pass_rate**
 
-  * ```tex
-    $\frac{HE_Pass}{Total}$
+  * ```
+    HE_Pass/Total
     ```
 
 * group by name, address, city, latitude, longitude
@@ -257,6 +259,8 @@ SELECT * FROM json_tab LIMIT 1;
 Create empty table yelp_business
 
 GET_JSON_OBJECT function can locate the targeted JSON object
+
+Loading the dota
 
 ```sql
 DROP TABLE IF EXISTS yelp_business;
@@ -335,12 +339,10 @@ SELECT COUNT(unique_temp.business_id) AS unique, count(temp.business_id) AS tota
 ```
 
 Comment: 
-```
+
 2260 = unique match, the number of business_id that **appears only once**.
 
 2761 = distinct business_id, the number of **different** business_id.
-```
-
 
 ## Table Structure
 
@@ -357,6 +359,22 @@ DESCRIBE boston_clean;
 -- | longitude    | string     |          |
 -- | property_id  | int        |          |
 -- +--------------+------------+----------+
+```
+
+```sql
+DESCRIBE boston_health;
+-- +------------+------------+----------+
+-- |  col_name  | data_type  | comment  |
+-- +------------+------------+----------+
+-- | name       | string     |          |
+-- | address    | string     |          |
+-- | city       | string     |          |
+-- | latitude   | string     |          |
+-- | longitude  | string     |          |
+-- | n_pass     | bigint     |          |
+-- | n_fail     | bigint     |          |
+-- | pass_rate  | double     |          |
+-- +------------+------------+----------+
 ```
 
 ```sql
