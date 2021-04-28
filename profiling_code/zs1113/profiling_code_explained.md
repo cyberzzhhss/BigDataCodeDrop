@@ -194,7 +194,8 @@ SELECT COUNT(review_count) AS num, review_count FROM yelp_business GROUP BY revi
 
 ```
 
-Find the most occurred city in yelp_business
+Find the top 10 most occurred city in yelp_business
+
 ```sql
 SELECT COUNT(city) AS COUNT, city FROM yelp_business GROUP BY city ORDER BY COUNT DESC LIMIT 10;
 
@@ -219,11 +220,123 @@ comment: only boston data has health information, the other cities do not have e
 
 # Profiling boston_stats
 
+
+```sql
+DESCRIBE boston_stats;
+
+-- +---------------+---------------+----------+
+-- |   col_name    |   data_type   | comment  |
+-- +---------------+---------------+----------+
+-- | business_id   | string        |          |
+-- | name          | string        |          |
+-- | address       | string        |          |
+-- | city          | string        |          |
+-- | stars         | decimal(2,1)  |          |
+-- | review_count  | int           |          |
+-- | is_open       | int           |          |
+-- | n_pass        | bigint        |          |
+-- | n_fail        | bigint        |          |
+-- | pass_rate     | double        |          |
+-- | latitude      | string        |          |
+-- | longitude     | string        |          |
+-- +---------------+---------------+----------+
+
+```
+
 ```sql
 SELECT COUNT(*) FROM boston_stats;
+
 -- +-------+
 -- |  _c0  |
 -- +-------+
 -- | 2157  |
 -- +-------+
 ```
+Find max, min, avg of stars for business
+
+```sql
+SELECT MAX(stars) AS max_star, MIN(stars) AS min_star, AVG(stars) AS avg_star FROM boston_stats;
+
+-- +-----------+-----------+-----------+
+-- | max_star  | min_star  | avg_star  |
+-- +-----------+-----------+-----------+
+-- | 5.0       | 1.0       | 3.50765   |
+-- +-----------+-----------+-----------+
+```
+Find top 3 most occured stars for business, top 1 is the mode.
+```sql
+SELECT COUNT(stars) AS num, stars FROM boston_stats GROUP BY stars ORDER BY num DESC LIMIT 3;
+
+-- +------+--------+
+-- | num  | stars  |
+-- +------+--------+
+-- | 588  | 4.0    |
+-- | 559  | 3.5    |
+-- | 372  | 3.0    |
+-- +------+--------+
+```
+
+Find the number of open businesses and closed businesses
+
+```sql
+SELECT COUNT(is_open), is_open FROM boston_stats GROUP BY is_open;
+
+```
+
+Find top 3 most occured review_count for business, top 1 is the mode.
+```sql
+-- +-------+----------+
+-- |  _c0  | is_open  |
+-- +-------+----------+
+-- | 781   | 0        |
+-- | 1376  | 1        |
+-- +-------+----------+
+```
+
+Find max, min, avg of review_count for business
+
+```sql
+SELECT MAX(review_count) AS max_review_count, MIN(review_count) AS min_review_count, AVG(review_count) AS avg_review_count FROM boston_stats;
+-- +-------------------+-------------------+---------------------+
+-- | max_review_count  | min_review_count  |  avg_review_count   |
+-- +-------------------+-------------------+---------------------+
+-- | 5115              | 5                 | 144.72508113120074  |
+-- +-------------------+-------------------+---------------------+
+```
+
+
+Find top 3 most occured review_count for business, top 1 is the mode.
+
+```sql
+SELECT COUNT(review_count) AS num, review_count FROM boston_stats GROUP BY review_count ORDER BY num DESC LIMIT 3;
+-- +------+---------------+
+-- | num  | review_count  |
+-- +------+---------------+
+-- | 77   | 5             |
+-- | 71   | 6             |
+-- | 51   | 8             |
+-- +------+---------------+
+
+```
+
+Find the top 10 most occurred city in boston_stats
+```sql
+SELECT COUNT(city) AS COUNT, city FROM boston_stats GROUP BY city ORDER BY COUNT DESC LIMIT 10;
+
+-- +--------+----------------+
+-- | count  |      city      |
+-- +--------+----------------+
+-- | 1538   | Boston         |
+-- | 99     | Brighton       |
+-- | 93     | Dorchester     |
+-- | 88     | Allston        |
+-- | 85     | Jamaica Plain  |
+-- | 43     | Roslindale     |
+-- | 40     | West Roxbury   |
+-- | 33     | Roxbury        |
+-- | 26     | East Boston    |
+-- | 22     | Hyde Park      |
+-- +--------+----------------+
+
+```
+comment: only boston data has health information, the other cities do not have easily accessible health data. 

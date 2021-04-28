@@ -6,7 +6,11 @@ SELECT COUNT(city) AS count, city FROM boston_clean GROUP BY city ORDER BY count
 
 SELECT COUNT(*) as count, result FROM boston_clean GROUP BY result ORDER BY count DESC;
 
+
+
 DESCRIBE yelp_business;
+
+SELECT COUNT(*) FROM yelp_business;
 
 SELECT MAX(stars) AS max_star, MIN(stars) AS min_star, AVG(stars) AS avg_star FROM yelp_business;
 
@@ -20,5 +24,20 @@ SELECT COUNT(review_count) AS num, review_count FROM yelp_business GROUP BY revi
 
 SELECT COUNT(city) AS COUNT, city FROM yelp_business GROUP BY city ORDER BY COUNT DESC LIMIT 10;
 
+
+
 DESCRIBE boston_stats;
 
+SELECT COUNT(*) FROM boston_stats;
+
+SELECT MAX(stars) AS max_star, MIN(stars) AS min_star, AVG(stars) AS avg_star FROM boston_stats;
+
+SELECT COUNT(stars) AS num, stars FROM boston_stats GROUP BY stars ORDER BY num DESC LIMIT 3;
+
+SELECT COUNT(is_open), is_open FROM boston_stats GROUP BY is_open;
+
+SELECT MAX(review_count) AS max_review_count, MIN(review_count) AS min_review_count, AVG(review_count) AS avg_review_count FROM boston_stats;
+
+SELECT COUNT(review_count) AS num, review_count FROM boston_stats GROUP BY review_count ORDER BY num DESC LIMIT 3;
+
+SELECT COUNT(city) AS COUNT, city FROM boston_stats GROUP BY city ORDER BY COUNT DESC LIMIT 10;
