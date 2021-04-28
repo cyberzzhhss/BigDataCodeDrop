@@ -21,7 +21,7 @@
 
 # File Directory
 ```
-bbcd                                  
+BigDataCodeDrop                                 
 ├─ ana_code                           
 │  ├─ clean_data                      
 │  │  └─ FinalData.csv                
