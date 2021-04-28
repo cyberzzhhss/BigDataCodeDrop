@@ -1,6 +1,6 @@
-
-
 ## Preparation
+
+The regression.scala has all the scala code, making it easier to run the code instead of copying paste the code one line at a time
 
 ### Rename the exported data and upload to hdfs
 ```shell
