@@ -64,18 +64,22 @@ BigDataCodeDrop
 
 ## Data Ingest
 Open  BigDataCodeDrop/data_ingest/data_ingest_explained.md
+
 Follow the instruction
 
 ## ETL Code
 Open  BigDataCodeDrop/etl_code/zs1113/etl_code_explained.md
+
 Follow the instruction
 
 ## Profiling Code
 Open BigDataCodeDrop/profiling_code/zs1113/profiling_code_explained.md  
+
 Follow the instruction
 
 ## Data Analytics
 Open BigDataCodeDrop/ana_conde/code_explanation.md
+
 Follow the instruction
 
 
