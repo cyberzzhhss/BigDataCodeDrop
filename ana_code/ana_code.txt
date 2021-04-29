@@ -11,9 +11,11 @@ spark-shell --deploy-mode client
 
 
 var df = spark.sql("SELECT * FROM csv.`/user/zs1113/sparkInput/FinalData.csv`")
+
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.ml.classification.LogisticRegression
+
 var partone = df.selectExpr("cast(_c9 as double) _c9","cast(_c4 as double) _c4")
 partone.printSchema()
 import org.apache.spark.ml.feature.VectorAssembler
@@ -47,4 +49,7 @@ part3 = part3.withColumnRenamed("_c6","label")
 var lr3 = new LogisticRegression()
 var lr3model = lr3.fit(part3)
 println(s"Coefficients: ${lr3model.coefficients} Intercept: ${lr3model.intercept}")
+var lr3modelSummary = lr3model.binarySummary
+var roc = lr3modelSummary.roc
+println(s"areaUnderROC: ${lr3modelSummary.areaUnderROC}")
 

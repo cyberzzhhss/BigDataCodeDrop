@@ -241,5 +241,16 @@ println(s"Coefficients: ${lr3model.coefficients} Intercept: ${lr3model.intercept
 // Coefficients: [0.05366519262928552] Intercept: 0.5653731412215562
 ```
 
+#### Evaluate the model
+```scala
+var lr3modelSummary = lr3model.binarySummary
+// lr3modelSummary: org.apache.spark.ml.classification.BinaryLogisticRegressionTrainingSummary = org.apache.spark.ml.classification.BinaryLogisticRegressionTrainingSummaryImpl@74884fdd
+
+var roc = lr3modelSummary.roc
+// roc: org.apache.spark.sql.DataFrame = [FPR: double, TPR: double]
+
+println(s"areaUnderROC: ${lr3modelSummary.areaUnderROC}")
+// areaUnderROC: 0.5004848063008069
+```
 # END (all steps are done)
 
